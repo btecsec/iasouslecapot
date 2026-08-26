@@ -1,0 +1,7 @@
+# Le fichier d'exemple de l'exercice du chapitre 5.
+# Les deux bibliothèques demandées...
+requests==2.32.3
+rich==13.7.1
+
+# ...et de quoi lancer les tests du dossier.
+pytest>=8.0

@@ -1,0 +1,13 @@
+# Chapitre 8 — Astuces Python pour coder plus vite et mieux
+#
+# Installation :
+#   pip install -r requirements.txt
+#
+# exercice_astuces.py ne dépend que de la bibliothèque standard : il tourne
+# sans rien installer. Les paquets ci-dessous servent à demo_astuces.py et
+# au bonus de l'exercice.
+
+numpy>=2.0
+pandas>=2.2
+tqdm>=4.66
+ruff>=0.6

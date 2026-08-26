@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+# `test_finetuned_model.py` et `test_if_gpu_installed.py` sont des **scripts de
+# démonstration** du chapitre, pas des tests : ils chargent un modèle et
+# exigent torch, transformers et plusieurs Go de RAM. Leur nom commence par
+# `test_` (c'est ainsi que le chapitre les nomme), donc pytest essaie de les
+# collecter : on les écarte explicitement.
+#
+#   python test_if_gpu_installed.py     <- pour les lancer, comme des scripts
+#   pytest -q                           <- pour les vrais tests
+addopts = "--ignore=test_finetuned_model.py --ignore=test_if_gpu_installed.py"

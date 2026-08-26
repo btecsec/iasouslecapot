@@ -1,0 +1,92 @@
+# Seuls les dossiers de chapitres partent sur GitHub.
+# Le manuscrit (.docx, .md des chapitres), les outils d'assemblage Word
+# et le venv restent locaux.
+
+# 1. Tout ignorer a la racine...
+/*
+
+# 2. ...sauf ce fichier et le dossier code/
+!/.gitignore
+!/code/
+
+# 3. Dans code/ : tout ignorer (outils/, pytorch-gpu/, requirements.txt...)
+/code/*
+
+# 4. ...sauf les dossiers de chapitres et le sommaire publie
+!/code/chapitre*/
+!/code/README.md
+
+# 5. Dans les chapitres : exclure les artefacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# Sorties d'entrainement et modeles (chapitre52 : ~17 Mo)
+/code/chapitre*/results_temp/
+/code/chapitre*/concierge_model/
+*.safetensors
+*.joblib
+*.pt
+*.pth
+*.h5
+*.keras
+*.ckpt
+
+# Bases vectorielles (Chroma)
+chroma_db/
+*.sqlite3
+
+# Divers
+.DS_Store
+.env
+
+
+
+# Ignore everything
+*
+
+# Allow gitignore itself
+!.gitignore
+
+# Allow code directory and its contents
+!code/
+!code/**
+
+# Specifically ignore these inside code/
+**/__pycache__/
+**/.claude/
+*.pyc
+
+# Caches d'outils (pytest, ruff, couverture) — chapitre 7
+**/.pytest_cache/
+**/.ruff_cache/
+.coverage
+htmlcov/
+
+# Artefacts produits en lançant les corrigés : ils se régénèrent, et rien de ce
+# qui suit n'a besoin d'être dans l'historique.
+#
+# Ces règles sont écrites en motifs, pas en chemins. Les précédentes nommaient un
+# numéro de chapitre — « code/chapitre45/modele.joblib » — et la renumérotation
+# du livre les a rendues muettes sans que rien ne le signale.
+
+# Modèles entraînés et checkpoints
+**/*.joblib
+**/*.keras
+**/*.pt
+**/*.pth
+**/*.safetensors
+
+# Sorties d'entraînement (fine-tuning)
+**/concierge_model/
+**/results_temp/
+**/checkpoint-*/
+
+# Bases vectorielles régénérées par les corrigés
+**/ma_base/
+
+

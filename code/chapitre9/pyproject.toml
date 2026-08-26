@@ -1,0 +1,29 @@
+# Chapitre 9 — configuration du projet.
+#
+# Depuis quelques années, tout se déclare ici : plus besoin de pytest.ini,
+# setup.cfg ni .flake8.
+
+[project]
+name = "chapitre9-tests"
+version = "0.1.0"
+description = "Tests unitaires et tests d'intégration, avec un focus IA"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+# `pythonpath = "."` permet d'écrire `from calculs import normaliser`
+# dans les tests sans installer le projet.
+pythonpath = ["."]
+testpaths = ["tests"]
+
+markers = [
+    "integration: test lent, appel réseau/LLM/base réel",
+]
+
+# -ra : un résumé de tout ce qui n'est pas passé, à la fin du rapport.
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]   # erreurs, bugs probables, ordre des imports

@@ -1,0 +1,79 @@
+# Chapitre 49 — chaîne CI/CD pour une API de modèle.
+#
+# À placer dans .github/workflows/ci.yml à la racine du dépôt.
+# Le fichier est volontairement commenté ligne à ligne : c'est un modèle à
+# copier, pas une boîte noire.
+
+name: CI/CD API manchots
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  # Permet de relancer la chaîne à la main depuis l'onglet Actions.
+  workflow_dispatch:
+
+jobs:
+  # ------------------------------------------------------------------ CI
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      # Ne pas s'arrêter au premier échec : on veut savoir si le bug touche
+      # une seule version de Python ou toutes.
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          # Met en cache les paquets pip : quelques minutes gagnées par run.
+          cache: pip
+
+      - name: Installer les dépendances
+        working-directory: code/chapitre47
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Vérifier le style (ruff)
+        working-directory: code/chapitre47
+        run: |
+          pip install ruff
+          ruff check .
+
+      - name: Lancer les tests
+        working-directory: code/chapitre47
+        # -m "not integration" : on écarte les tests lents ou payants
+        # (appels à une vraie API de LLM, par exemple — chapitre 9).
+        run: pytest -q -m "not integration"
+
+  # ------------------------------------------------------------------ CD
+  deploiement:
+    # Ne démarre QUE si le job `tests` a réussi : c'est tout le principe.
+    needs: tests
+    # Et seulement sur la branche principale, jamais sur une pull request.
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construire l'image Docker
+        working-directory: code/chapitre47
+        # L'étiquette contient le SHA du commit : chaque image est traçable,
+        # et un retour arrière consiste à redéployer l'étiquette précédente.
+        run: docker build -t api-manchots:${{ github.sha }} .
+
+      - name: Déployer
+        # Les secrets viennent des « repository secrets » de GitHub.
+        # Ils n'apparaissent jamais dans le dépôt ni dans les journaux.
+        env:
+          CLE_DEPLOIEMENT: ${{ secrets.CLE_DEPLOIEMENT }}
+        run: |
+          echo "Pousser l'image vers le registre, puis mettre à jour le service."
+          echo "Les commandes exactes dépendent du fournisseur (chapitre 47)."
