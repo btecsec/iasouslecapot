@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+# Le marqueur `docker` isole le seul test qui construit vraiment une image :
+#   pytest -q                     -> les tests rapides (par défaut)
+#   pytest -q -m docker           -> le build complet, plusieurs minutes
+addopts = "-m 'not docker'"
+markers = [
+    "docker: test qui exige un démon Docker et construit une image (lent)",
+]

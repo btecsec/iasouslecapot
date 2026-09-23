@@ -1,0 +1,44 @@
+# Exemple de pipeline d'intégration continue (GitHub Actions).
+#
+# Ce fichier n'est PAS actif : pour l'utiliser, copiez-le dans
+# `.github/workflows/tests.yml` à la racine de votre dépôt.
+#
+# Le principe du chapitre : les tests rapides et gratuits à chaque envoi
+# de code, les tests lents et payants une fois par nuit.
+
+name: Tests
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 3 * * *"        # tous les jours à 3 h du matin
+
+jobs:
+  rapide:
+    name: Tests rapides (sans appel réseau)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+      - run: ruff check .
+      - run: pytest -m "not integration" --cov=. --cov-report=term-missing
+
+  integration:
+    name: Tests d'intégration (vrais appels)
+    # Uniquement la nuit : ces tests coûtent de l'argent et du temps.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+      - run: pytest -m integration
+        env:
+          # La clé vit dans les secrets du dépôt, jamais dans le code.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

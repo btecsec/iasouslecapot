@@ -1,0 +1,7 @@
+
+    Le manuel de l'utilisateur du RobotX1000.
+    Pour réinitialiser le mot de passe, maintenez le bouton 'Reset' pendant 5 secondes.
+    Le RobotX1000 fonctionne avec une batterie Lithium-Ion de 5000mAh.
+    Le support technique est joignable à l'adresse support@robotx.com.
+    Le RobotX1000 ne peut pas voler, il se déplace uniquement au sol.
+    
